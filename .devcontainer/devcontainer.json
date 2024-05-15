@@ -25,7 +25,8 @@
 			"extensions": [
 				"42Crunch.vscode-openapi",
 				"redhat.vscode-yaml",
-				"kennylong.kubernetes-yaml-formatter"
+				"kennylong.kubernetes-yaml-formatter",
+				"premparihar.gotestexplorer"
 			]
 		}
 	}
