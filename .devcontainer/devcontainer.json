@@ -17,6 +17,16 @@
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root",
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/markdownlint-cli:1": {}
+		"ghcr.io/devcontainers-contrib/features/markdownlint-cli:1": {},
+		
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"42Crunch.vscode-openapi",
+				"redhat.vscode-yaml",
+				"kennylong.kubernetes-yaml-formatter"
+			]
+		}
 	}
 }
