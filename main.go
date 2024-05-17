@@ -57,11 +57,11 @@ func main() {
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	router.Group("/orders")
 	{
-		router.GET("/", h.HelloWorld)
-		router.POST("/", h.HelloWorld)
-		router.GET("/{orderId}", h.HelloWorld)
-		router.PUT("/{orderId}", h.HelloWorld)
-		router.DELETE("/{orderId}", h.HelloWorld)
+		router.GET("/", h.GetOrders)
+		router.POST("/", h.AddOrder)
+		router.GET("/{orderId}", h.GetOrder)
+		router.PUT("/{orderId}", h.ReplaceOrder)
+		router.DELETE("/{orderId}", h.DeleteOrder)
 	}
 
 	// Start the server
