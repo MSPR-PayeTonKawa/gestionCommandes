@@ -11,9 +11,10 @@ steps:
       from_secret: DOCKER_USERNAME
     DOCKER_PASSWORD:
       from_secret: DOCKER_PASSWORD
+    APPLICATION: gestion-commandes
   commands:
   - go mod download
   - CGO_ENABLED=0 GOOS=linux go build -o app main.go
-  - docker build -t $DOCKER_REGISTRY/your_username/your_application .
+  - docker build -t $DOCKER_REGISTRY/$DOCKER_USERNAME/$APPLICATION .
   - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
-  - docker push $DOCKER_REGISTRY/your_username/your_application
+  - docker push $DOCKER_REGISTRY/$DOKCER_USERNAME/$APPLICATION
