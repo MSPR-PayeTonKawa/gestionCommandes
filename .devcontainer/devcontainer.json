@@ -36,7 +36,10 @@
 				"kennylong.kubernetes-yaml-formatter",
 				"premparihar.gotestexplorer",
 				"ms-azuretools.vscode-docker",
-				"GitHub.vscode-pull-request-github"
+				"GitHub.vscode-pull-request-github",
+				"oostrap.drone-status",
+				"maximtrp.drone-ci",
+				"supakornwarodom.droneci"
 			]
 		}
 	}
