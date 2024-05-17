@@ -8,3 +8,22 @@ steps:
   image: golang:1.22
   commands:
   - go build -o gestionCommandes
+
+kind: pipeline
+type: kubernetes
+name: go-build
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  image: golang:1.22
+  commands:
+  - go build -o gestionCommandes
+
+- name: deploy
+  image: alpine
+  commands:
+  - echo "Deploying myapp..."
