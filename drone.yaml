@@ -8,9 +8,9 @@ steps:
   environment:
     DOCKER_REGISTRY: registry.germainleignel.com
     DOCKER_USERNAME:
-      from_secret: docker_username
+      from_secret: DOCKER_USERNAME
     DOCKER_PASSWORD:
-      from_secret: docker_password
+      from_secret: DOCKER_PASSWORD
   commands:
   - go mod download
   - CGO_ENABLED=0 GOOS=linux go build -o app main.go
