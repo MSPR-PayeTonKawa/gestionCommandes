@@ -1,4 +1,5 @@
 # Project Name
+[![Build Status](https://drone.germainleignel.com/api/badges/MSPR-PayeTonKawa/gestionCommandes/status.svg?ref=refs/heads/main)](https://drone.germainleignel.com/MSPR-PayeTonKawa/gestionCommandes)
 
 A brief description of your project.
 
