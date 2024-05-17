@@ -55,13 +55,14 @@ func main() {
 
 	// Define a route handler for the root path
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
-	router.Group("/orders")
+
+	orders := router.Group("/orders")
 	{
-		router.GET("/", h.GetOrders)
-		router.POST("/", h.AddOrder)
-		router.GET("/{orderId}", h.GetOrder)
-		router.PUT("/{orderId}", h.ReplaceOrder)
-		router.DELETE("/{orderId}", h.DeleteOrder)
+		orders.GET("/", h.GetOrders)
+		orders.POST("/", h.AddOrder)
+		orders.GET("/{orderId}", h.GetOrder)
+		orders.PUT("/{orderId}", h.ReplaceOrder)
+		orders.DELETE("/{orderId}", h.DeleteOrder)
 	}
 
 	// Start the server
