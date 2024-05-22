@@ -7,25 +7,15 @@ platform:
   arch: amd64
 
 steps:
-- name: docker build
-  image: plugins/docker
-  settings:
-    registry: registry.germainleignel.com
-    repo: registry.germainleignel.com/paye-ton-kawa/gestionCommandes
-    tags: latest
-    username: 
-      from_secret: harbor_username
-    password: 
-      from_secret: harbor_password
-    dockerfile: Dockerfile
-    context: .
-    insecure: true
-    debug: true
-    ulimits:
-    nproc: 65535
-    nofile:
-      soft: 200000
-      hard: 200000
+  - name: docker
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: harbor_username
+      password:
+        from_secret: harbor_password
+      repo: registry.germainleignel.com/paye-ton-kawa/gestionCommandes
+      registry: registry.germainleignel.com
 
 trigger:
   branch:
