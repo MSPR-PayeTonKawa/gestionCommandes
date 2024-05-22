@@ -1,0 +1,38 @@
+kind: pipeline
+type: docker
+name: Build and deploy Gestion Commandes
+
+node:
+  architecture: amd64
+
+steps:
+  - name: build
+    image: docker:19.03.12
+    environment:
+      - DOCKER_BUILDKIT=1
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker build -t gestioncommandes .
+
+  - name: push
+    image: plugins/docker
+    settings:
+      registry: registry.germainleignel.com
+      repo: registry.germainleignel.com/paye-ton-kawa/gestioncommandes
+      tags: latest
+      username:
+        from_secret: harbor_username
+      password:
+        from_secret: harbor_password
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
+
+trigger:
+  branch:
+    - main
+    - master
