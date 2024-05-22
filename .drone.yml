@@ -1,4 +1,5 @@
 kind: pipeline
+<<<<<<< HEAD
 type: docker
 
 name: build
@@ -12,12 +13,17 @@ steps:
 kind: pipeline
 type: kubernetes
 name: go-build
+=======
+type: kubernetes
+name: GestionCommandes
+>>>>>>> 969cb14db0bb48adf7acb0627ab735c579595ce7
 
 platform:
   os: linux
   arch: amd64
 
 steps:
+<<<<<<< HEAD
 - name: build
   image: golang:1.22
   commands:
@@ -27,3 +33,16 @@ steps:
   image: alpine
   commands:
   - echo "Deploying myapp..."
+=======
+- name: docker build
+  image: plugins/docker
+  settings:
+    repo: $DOCKER_URL/gestionCommandes
+    tags: latest
+    username: $DOCKER_USRNAME
+    password: $DOCKER_PASSWORD
+    dockerfile: Dockerfile
+    context: .
+    insecure: true
+    debug: true
+>>>>>>> 969cb14db0bb48adf7acb0627ab735c579595ce7
