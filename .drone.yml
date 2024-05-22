@@ -21,6 +21,11 @@ steps:
     context: .
     insecure: true
     debug: true
+    ulimits:
+    nproc: 65535
+    nofile:
+      soft: 200000
+      hard: 200000
 
 trigger:
   branch:
