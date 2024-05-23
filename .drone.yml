@@ -11,7 +11,16 @@ steps:
     image: golang
     commands:
       - go test
-      - go build
+
+  - name: docker
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password: 
+        from_secret: docker_password
+      repo: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
+      registry: registry.germainleignel.com
 
 trigger:
   branch:
