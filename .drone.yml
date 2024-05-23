@@ -22,6 +22,18 @@ steps:
       repo: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
       registry: registry.germainleignel.com
 
+  - name: deploy
+    image: sinlead/drone-kube
+    settings:
+      kubernetes_server:
+        from_secret: kubernetes_server
+      kubernetes_cert:
+        from_secret: kubernetes_cert
+      kubernetes_token:
+        from_secret: kubernetes_token
+      namespace: payetonkawa-prod
+      yaml: kubernetes/prod/
+
 trigger:
   branch:
     - main

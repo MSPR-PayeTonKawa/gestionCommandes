@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestioncommandes-deployment
+  namespace: payetonkawa-prod
+  labels:
+    app: gestioncommandes
+    environment: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gestioncommandes
+  template:
+    metadata:
+      labels:
+        app: gestioncommandes
+        environment: production
+    spec:
+      containers:
+        - name: gestioncommandes
+          image: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
