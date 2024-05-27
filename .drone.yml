@@ -12,14 +12,7 @@ steps:
   commands:
   - go test
 
-- name: code-analysis
-  image: aosapps/drone-sonar-plugin
-  settings:
-    sonar_host:
-      from_secret: sonar_host
-    sonar_token:
-      from_secret: sonar_token
-    level: DEBUG
+
 
 - name: docker
   image: plugins/docker
