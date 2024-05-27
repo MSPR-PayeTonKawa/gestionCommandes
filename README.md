@@ -1,6 +1,6 @@
 # Project Name
 [![Build Status](https://drone.germainleignel.com/api/badges/MSPR-PayeTonKawa/gestionCommandes/status.svg?ref=refs/heads/main)](https://drone.germainleignel.com/MSPR-PayeTonKawa/gestionCommandes)
-[![Quality Gate Status](https://sonar.germainleignel.com/api/project_badges/measure?project=MSPR-PayeTonKawa_gestionCommandes_ec4f6a4f-4e6f-4a92-845b-d61ec288fa5a&metric=alert_status&token=sqb_09dd59799c97efa3b434cc31e97ce94649cb62b9)](https://sonar.germainleignel.com/dashboard?id=MSPR-PayeTonKawa_gestionCommandes_ec4f6a4f-4e6f-4a92-845b-d61ec288fa5a)
+[![Quality Gate Status](https://sonar.germainleignel.com/api/project_badges/measure?project=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f&metric=alert_status&token=sqb_26f003e076152d84889ad1bcdf8686b32d6fb263)](https://sonar.germainleignel.com/dashboard?id=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f)
 
 A brief description of your project.
 
