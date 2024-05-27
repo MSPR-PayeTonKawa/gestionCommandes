@@ -22,14 +22,14 @@ steps:
         from_secret: sonar_token
     commands:
       - apk add --no-cache curl unzip openjdk11-jre
-      - mkdir -p $HOME/.sonar
-      - curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-      - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+      - mkdir -p $SONAR_SCANNER_HOME
+      - curl --create-dirs -sSLo /root/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+      - unzip -o /root/.sonar/sonar-scanner.zip -d /root/.sonar/
       - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-      - sonar-scanner \
-        -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
-        -Dsonar.sources=. \
-        -Dsonar.host.url=https://sonar.germainleignel.com
+      - /root/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner \
+          -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=https://sonar.germainleignel.com
 
   # - name: sonar-scanner
   #   image: openjdk:11
