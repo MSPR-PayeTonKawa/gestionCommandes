@@ -17,6 +17,7 @@ spec:
         app: gestioncommandes
         environment: production
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: gestioncommandes
           image: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
