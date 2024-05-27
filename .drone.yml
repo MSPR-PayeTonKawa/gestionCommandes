@@ -47,17 +47,18 @@ steps:
         **Event:** `{{uppercase build.event}}`
 
         **Commit:**
-        - **SHA:** [{{commit.sha}}]({{commit.link}})
-        - **Author:** `{{commit.author}} <{{commit.email}}>`
-        - **Message:** {{commit.message}}
+        \- **SHA:** [{{commit.sha}}]({{commit.link}})
+        \- **Author:** `{{commit.author}} <{{commit.email}}>`
+        \- **Message:** {{commit.message}}
 
         **Build Info:**
-        - **Number:** [#{{build.number}}]({{build.link}})
-        - **Status:** `{{uppercase build.status}}`
-        - **Finished At:** `{{datetime build.finished "2006.01.02 15:04" ""}}`
+        \- **Number:** [#{{build.number}}]({{build.link}})
+        \- **Status:** `{{uppercase build.status}}`
+        \- **Finished At:** `{{datetime build.finished "2006.01.02 15:04" ""}}`
 
       when:
         status: [success, failure, changed]
+
 
 
 trigger:
