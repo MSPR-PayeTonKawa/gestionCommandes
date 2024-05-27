@@ -22,6 +22,16 @@ steps:
     commands:
       - go test
 
+  - name: docker
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: harbor_username
+      password:
+        from_secret: harbor_password
+      repo: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
+      registry: registry.germainleignel.com
+
   - name: msg status
     image: appleboy/drone-discord
     settings:
@@ -29,9 +39,26 @@ steps:
         from_secret: discord_id
       webhook_token:
         from_secret: discord_token
-      message: "{{#success build.status}}✅{{else}}❌{{/success}}  Repository `[{{repo.name}}/{{commit.branch}}]` triggered by event `[{{uppercase build.event}}]` for build.\n    - Commit [[{{commit.sha}}]({{commit.link}})]\n    - Author `[{{commit.author}} / {{commit.email}}]`\n    - Message: {{commit.message}}    - Drone build [[#{{build.number}}]({{build.link}})] reported `[{{uppercase build.status}}]` at `[{{datetime build.finished \"2006.01.02 15:04\" \"\"}}]`\n"
+      message: >
+        {{#success build.status}}✅ **Build Success** {{else}}❌ **Build Failure** {{/success}}
+
+        **Repository:** `{{repo.name}}` on branch `{{commit.branch}}`
+
+        **Event:** `{{uppercase build.event}}`
+
+        **Commit:**
+        - **SHA:** [{{commit.sha}}]({{commit.link}})
+        - **Author:** `{{commit.author}} <{{commit.email}}>`
+        - **Message:** {{commit.message}}
+
+        **Build Info:**
+        - **Number:** [#{{build.number}}]({{build.link}})
+        - **Status:** `{{uppercase build.status}}`
+        - **Finished At:** `{{datetime build.finished "2006.01.02 15:04" ""}}`
+
       when:
         status: [success, failure, changed]
+
 
 trigger:
   branch:
