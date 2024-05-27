@@ -15,11 +15,7 @@ steps:
 - name: sonarqube
   image: sonarsource/sonar-scanner-cli
   commands:
-  - sonar-scanner \
-      -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_ec4f6a4f-4e6f-4a92-845b-d61ec288fa5a \
-      -Dsonar.sources=. \
-      -Dsonar.host.url=https://sonar.germainleignel.com \
-      -Dsonar.login=${SONAR_TOKEN}
+  - sonar-scanner -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_ec4f6a4f-4e6f-4a92-845b-d61ec288fa5a -Dsonar.sources=. -Dsonar.host.url=https://sonar.germainleignel.com -Dsonar.login=$(SONAR_TOKEN)
 
 - name: docker
   image: plugins/docker
