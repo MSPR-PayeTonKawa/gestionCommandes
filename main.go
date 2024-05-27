@@ -12,6 +12,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+func simpleFunctionToTest(params string) string {
+	return "Hello " + params
+}
+
 func connectDatabase() (*sql.DB, error) {
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("POSTGRES_USER")
