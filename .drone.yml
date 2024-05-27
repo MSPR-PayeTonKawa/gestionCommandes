@@ -15,7 +15,7 @@ steps:
       SONAR_TOKEN:
         from_secret: sonar_token
     commands:
-      - sonar-scanner
+      - sonar-scanner -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 
   - name: test
     image: golang
