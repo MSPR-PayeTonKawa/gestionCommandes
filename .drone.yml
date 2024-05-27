@@ -12,11 +12,14 @@ steps:
   commands:
   - go test
 
-- name: sonarqube
-  image: sonarsource/sonar-scanner-cli
-  commands:
-  - sonar-scanner -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_ec4f6a4f-4e6f-4a92-845b-d61ec288fa5a -Dsonar.sources=. -Dsonar.host.url=https://sonar.germainleignel.com -Dsonar.login=$(SONAR_TOKEN)
-
+- name: code-analysis
+  image: aosapps/drone-sonar-plugin
+  settings:
+    sonar_host:
+      from_secret: sonar_host
+    sonar_token:
+      from_secret: sonar_token
+      
 - name: docker
   image: plugins/docker
   settings:
