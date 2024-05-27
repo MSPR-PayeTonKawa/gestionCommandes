@@ -17,7 +17,7 @@ steps:
   environment:
     SONAR_SCANNER_VERSION: 5.0.1.3006
     SONAR_SCANNER_HOME: /root/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
-    sonar_token:
+    sonar.token:
       from_secret: sonar_token
   commands:
   - curl --create-dirs -sSLo /root/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
