@@ -31,6 +31,33 @@ steps:
         from_secret: harbor_password
       repo: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
       registry: registry.germainleignel.com
+  - name: notify_discord_success
+    image: alpine:3.18
+    settings:
+      WEBHOOK:
+        from_secret: discord_webhook
+    commands:
+      - apk add --no-cache curl
+      - >
+        curl -X POST -H "Content-Type: application/json" \
+        -d '{"content": "Pipeline succeeded for project MSPR-PayeTonKawa_gestionCommandes"}' \
+        $WEBHOOK
+    when:
+      status: [success]
+
+  - name: notify_discord_failure
+    image: alpine:3.18
+    settings:
+      WEBHOOK:
+        from_secret: discord_webhook
+    commands:
+      - apk add --no-cache curl
+      - >
+        curl -X POST -H "Content-Type: application/json" \
+        -d '{"content": "Pipeline failed for project MSPR-PayeTonKawa_gestionCommandes"}' \
+        $WEBHOOK
+    when:
+      status: [failure]
 
 trigger:
   branch:
