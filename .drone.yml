@@ -7,26 +7,32 @@ platform:
   arch: amd64
 
 steps:
-  - name: sonar_scanner
-    image: alpine:3.18
-    environment:
-      SONAR_SCANNER_VERSION: 5.0.1.3006
-      SONAR_SCANNER_HOME: /root/.sonar
-      SONAR_SCANNER_OPTS: "-server"
-      JAVA_HOME: /usr/lib/jvm/java-11-openjdk
-      SONAR_TOKEN:
+  # - name: sonar_scanner
+  #   image: alpine:3.18
+  #   environment:
+  #     SONAR_SCANNER_VERSION: 5.0.1.3006
+  #     SONAR_SCANNER_HOME: /root/.sonar
+  #     SONAR_SCANNER_OPTS: "-server"
+  #     JAVA_HOME: /usr/lib/jvm/java-11-openjdk
+  #     SONAR_TOKEN:
+  #       from_secret: sonar_token
+  #   commands:
+  #     - apk add --no-cache curl unzip openjdk11-jre
+  #     - mkdir -p $SONAR_SCANNER_HOME
+  #     - curl --create-dirs -sSLo /root/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+  #     - unzip -o /root/.sonar/sonar-scanner.zip -d /root/.sonar/
+  #     - export PATH=$SONAR_SCANNER_HOME/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin:$PATH && export SONAR_SCANNER_OPTS="-server -Djava.home=$JAVA_HOME" && sonar-scanner \
+  #       -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
+  #       -Dsonar.sources=. \
+  #       -Dsonar.host.url=https://sonar.germainleignel.com
+  - name: code-analysis
+    image: aosapps/drone-sonar-plugin
+    settings:
+      sonar_host:
+        from_secret: sonar_host
+      sonar_token:
         from_secret: sonar_token
-    commands:
-      - apk add --no-cache curl unzip openjdk11-jre
-      - mkdir -p $SONAR_SCANNER_HOME
-      - curl --create-dirs -sSLo /root/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-      - unzip -o /root/.sonar/sonar-scanner.zip -d /root/.sonar/
-      - export PATH=$SONAR_SCANNER_HOME/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin:$PATH && export SONAR_SCANNER_OPTS="-server -Djava.home=$JAVA_HOME" && sonar-scanner \
-        -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
-        -Dsonar.sources=. \
-        -Dsonar.host.url=https://sonar.germainleignel.com
 
-        
   - name: test
     image: golang
     commands:
