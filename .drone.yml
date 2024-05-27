@@ -24,10 +24,7 @@ steps:
   - unzip -o /root/.sonar/sonar-scanner.zip -d /root/.sonar/
   - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
   - export SONAR_SCANNER_OPTS="-server"
-  - /root/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner \
-      -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
-      -Dsonar.sources=. \
-      -Dsonar.host.url=https://sonar.germainleignel.com
+  - /root/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f -Dsonar.sources=. -Dsonar.host.url=https://sonar.germainleignel.com
 
 - name: docker
   image: plugins/docker
