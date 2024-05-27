@@ -7,11 +7,6 @@ platform:
   arch: amd64
 
 steps:
-  - name: test
-    image: golang
-    commands:
-      - go test
-
   - name: sonar_scanner
     image: alpine:3.18
     environment:
@@ -24,27 +19,15 @@ steps:
       - mkdir -p $SONAR_SCANNER_HOME
       - curl --create-dirs -sSLo /root/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
       - unzip -o /root/.sonar/sonar-scanner.zip -d /root/.sonar/
-      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-      - export SONAR_SCANNER_OPTS="-server -Djava.home=$JAVA_HOME"
-      - sonar-scanner \
-          -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
-          -Dsonar.sources=. \
-          -Dsonar.host.url=https://sonar.germainleignel.com
-
-
-  # - name: sonar-scanner
-  #   image: openjdk:11
-  #   environment:
-  #     SONAR_SCANNER_VERSION: 5.0.1.3006
-  #     SONAR_SCANNER_HOME: /root/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
-  #     sonar.token:
-  #       from_secret: sonar_token
-  #   commands:
-  #   - curl --create-dirs -sSLo /root/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-  #   - unzip -o /root/.sonar/sonar-scanner.zip -d /root/.sonar/
-  #   - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-  #   - export SONAR_SCANNER_OPTS="-server"
-  #   - /root/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f -Dsonar.sources=. -Dsonar.host.url=https://sonar.germainleignel.com
+      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH && export SONAR_SCANNER_OPTS="-server -Djava.home=$JAVA_HOME" && sonar-scanner \
+        -Dsonar.projectKey=MSPR-PayeTonKawa_gestionCommandes_909bdf9b-3c96-4895-9a16-4f87c5490a8f \
+        -Dsonar.sources=. \
+        -Dsonar.host.url=https://sonar.germainleignel.com
+        
+  - name: test
+    image: golang
+    commands:
+      - go test
 
   - name: docker
     image: plugins/docker
