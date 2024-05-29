@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payetonkawa-ingress
+  namespace: payetonkawa-prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - payetonkawa.germainleignel.com
+    secretName: payetonkawa-tls
+  rules:
+  - host: api.payetonkawa.germainleignel.com
+    http:
+      paths:
+      - path: /commandes
+        pathType: Prefix
+        backend:
+          service:
+            name: gestioncommandes-service
+            port:
+              number: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-commandes
+  namespace: payetonkawa-prod
+spec:
+  stripPrefix:
+    prefixes:
+      - /commandes
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payetonkawa-ingress-middleware
+  namespace: payetonkawa-prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: payetonkawa-prod-strip-commandes@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: api.payetonkawa.germainleignel.com
+    http:
+      paths:
+      - path: /commandes
+        pathType: Prefix
+        backend:
+          service:
+            name: gestioncommandes-service
+            port:
+              number: 8080
