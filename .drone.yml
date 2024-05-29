@@ -35,10 +35,10 @@ steps:
   - name: deploy
     image: bitnami/kubectl
     environment:
-      KUBECONFIG:
-        from_secret: KUBECONFIG
-      COMMANDES_DEPLOYMENT:
-        from_secret: commandes_deployment
+      KUBECONFIG: /root/.kube/config
+    volumes:
+      - name: kubeconfig
+        path: /root/.kube
     commands:
       - kubectl apply -f ./kubernetes/prod
 
