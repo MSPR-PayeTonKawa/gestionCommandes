@@ -33,14 +33,18 @@ steps:
       registry: registry.germainleignel.com
 
   - name: deploy
-    image: bitnami/kubectl
+    image: bitnami/kubectl:latest
     environment:
       KUBECONFIG: /root/.kube/config
     volumes:
       - name: kubeconfig
         path: /root/.kube
     commands:
+      - mkdir -p /root/.kube
+      - echo "$KUBECONFIG_CONTENT" > /root/.kube/config
       - kubectl apply -f ./kubernetes/prod
+      - kubectl rollout restart deployment $COMMANDES_DEPLOYMENT
+
 
   - name: msg status
     image: appleboy/drone-discord
