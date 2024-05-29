@@ -32,6 +32,16 @@ steps:
       repo: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
       registry: registry.germainleignel.com
 
+  - name: deploy
+    image: bitnami/kubectl
+    environment:
+      KUBECONFIG:
+        from_secret: KUBECONFIG
+      COMMANDES_DEPLOYMENT:
+        from_secret: commandes_deployment
+    commands:
+      - kubectl apply -f ./kubernetes/prod
+
   - name: msg status
     image: appleboy/drone-discord
     settings:
@@ -41,7 +51,7 @@ steps:
         from_secret: discord_token
       message: "{{#success build.status}}✅{{else}}❌{{/success}}  Repository `[{{repo.name}}/{{commit.branch}}]` triggered by event `[{{uppercase build.event}}]` for build.\n    - Commit [[{{commit.sha}}]({{commit.link}})]\n    - Author `[{{commit.author}} / {{commit.email}}]`\n    - Message: {{commit.message}}    - Drone build [[#{{build.number}}]({{build.link}})] reported `[{{uppercase build.status}}]` at `[{{datetime build.finished \"2006.01.02 15:04\" \"\"}}]`\n"
       when:
-        status: [ success, failure, changed ]
+        status: [success, failure, changed]
 
 trigger:
   branch:
