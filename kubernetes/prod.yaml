@@ -1,3 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: payetonkawa-certificate
+  namespace: payetonkawa-prod  # Adjust the namespace to where your service is deployed
+spec:
+  secretName: payetonkawa-tls
+  issuerRef:
+    name: letsencrypt-prod  # Change to letsencrypt-staging if you're not ready for production
+    kind: ClusterIssuer
+  dnsNames:
+  - api.payetonkawa.germainleignel.com
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -103,3 +116,113 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payetonkawa-ingress
+  namespace: payetonkawa-prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - payetonkawa.germainleignel.com
+      secretName: payetonkawa-tls
+  rules:
+    - host: api.payetonkawa.germainleignel.com
+      http:
+        paths:
+          - path: /commandes
+            pathType: Prefix
+            backend:
+              service:
+                name: gestioncommandes-service
+                port:
+                  number: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-commandes
+  namespace: payetonkawa-prod
+spec:
+  stripPrefix:
+    prefixes:
+      - /commandes
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payetonkawa-ingress-middleware
+  namespace: payetonkawa-prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: payetonkawa-prod-strip-commandes@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: api.payetonkawa.germainleignel.com
+      http:
+        paths:
+          - path: /commandes
+            pathType: Prefix
+            backend:
+              service:
+                name: gestioncommandes-service
+                port:
+                  number: 8080
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: payetonkawa-prod
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: commandes-secrets
+  namespace: payetonkawa-prod
+type: Opaque
+data:
+  POSTGRES_DB: Y29tbWFuZGVz
+  POSTGRES_USER: Z21u
+  POSTGRES_PASSWORD: YXplcnR5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gestioncommandes-service
+  namespace: payetonkawa-prod
+  labels:
+    environment: production
+spec:
+  selector:
+    app: gestioncommandes
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: payetonkawa-prod
+  labels:
+    environment: production
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432%
