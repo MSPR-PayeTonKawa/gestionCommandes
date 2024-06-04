@@ -1,16 +1,3 @@
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: payetonkawa-certificate
-  namespace: payetonkawa-prod  # Adjust the namespace to where your service is deployed
-spec:
-  secretName: payetonkawa-tls
-  issuerRef:
-    name: letsencrypt-prod  # Change to letsencrypt-staging if you're not ready for production
-    kind: ClusterIssuer
-  dnsNames:
-  - api.payetonkawa.germainleignel.com
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -126,10 +113,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: traefik
-  tls:
-    - hosts:
-        - payetonkawa.germainleignel.com
-      secretName: payetonkawa-tls
   rules:
     - host: api.payetonkawa.germainleignel.com
       http:
