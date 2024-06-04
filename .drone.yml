@@ -32,15 +32,12 @@ steps:
       repo: registry.germainleignel.com/paye-ton-kawa/gestion-commandes
       registry: registry.germainleignel.com
 
-  - name: apply-k8s-manifests
-    image: registry.germainleignel.com/personal/kubectl
+  - name: dron8s
+    image: ghcr.io/bh90210/dron8s:latest
     settings:
-      KUBECONFIG: 
+      yaml: ./kubernetes/prod/
+      kubeconfig:
         from_secret: kubeconfig
-    commands:
-      - mkdir -p /root/.kube
-      - echo $KUBECONFIG > /root/.kube/config
-      - kubectl apply -f kubernetes/prod/*.yaml
 
   - name: msg status
     image: appleboy/drone-discord
