@@ -38,7 +38,7 @@ steps:
       KUBECONFIG: 
         from_secret: kubeconfig
     commands:
-      # set kubeconfig
+      - mkdir -p /root/.kube
       - echo $KUBECONFIG > /root/.kube/config
       - kubectl apply -f kubernetes/prod/*.yaml
 
