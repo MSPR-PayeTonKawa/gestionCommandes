@@ -36,8 +36,6 @@ steps:
     image: ghcr.io/bh90210/dron8s:latest
     settings:
       yaml: ./kubernetes/prod.yaml
-      kubeconfig:
-        from_secret: kubeconfig
 
   - name: msg status
     image: appleboy/drone-discord
