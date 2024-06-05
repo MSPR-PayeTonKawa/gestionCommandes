@@ -1,5 +1,18 @@
 #!/bin/sh
 
+
+# Update package lists
+apt-get update
+
+# Install dos2unix
+apt-get install -y dos2unix
+
+# Convert line endings of setup.sh
+dos2unix /workspaces/api-gestion-produits/.devcontainer/setup.sh
+
+# Install PostgreSQL
+apt-get install -y postgresql postgresql-contrib
+
 # start postgres
 service postgresql start
 
