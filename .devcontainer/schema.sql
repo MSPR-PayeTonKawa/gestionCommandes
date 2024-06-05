@@ -1,5 +1,5 @@
 -- Create a table for Orders
-CREATE TABLE Orders (
+CREATE TABLE orders (
     orderId VARCHAR(255) PRIMARY KEY,
     customerName VARCHAR(255),
     orderDate TIMESTAMP,
@@ -8,11 +8,11 @@ CREATE TABLE Orders (
 );
 
 -- Create a table for OrderItems
-CREATE TABLE OrderItems (
+CREATE TABLE orderItems (
     itemId SERIAL PRIMARY KEY,
     orderId VARCHAR(255),
     productId VARCHAR(255),
     quantity INTEGER,
     price FLOAT,
-    FOREIGN KEY (orderId) REFERENCES Orders(orderId)
+    FOREIGN KEY (orderId) REFERENCES orders(orderId)
 );

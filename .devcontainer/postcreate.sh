@@ -7,9 +7,6 @@ apt-get update
 # Install dos2unix
 apt-get install -y dos2unix
 
-# Convert line endings of setup.sh
-dos2unix /workspaces/api-gestion-produits/.devcontainer/setup.sh
-
 # Install PostgreSQL
 apt-get install -y postgresql postgresql-contrib
 
@@ -23,7 +20,7 @@ psql -U postgres -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
 psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $POSTGRES_USER;"
 
 # Run schema.sql
-psql -U $POSTGRES_USER -d $POSTGRES_DB -a -f ./schema.sql
+psql -U $POSTGRES_USER -d $POSTGRES_DB -a -f .devcontainer/schema.sql
 
 # Install cosmtrek/air
 go install github.com/air-verse/air@latest
