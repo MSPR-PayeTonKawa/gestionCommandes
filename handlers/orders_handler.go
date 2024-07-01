@@ -55,7 +55,7 @@ func (h Handlers) AddOrder(c *gin.Context) {
 	}
 
 	newItemId := -1
-	sqlStatement := "INSERT INTO OrderItems (productId, quantity, price) VALUES ($1, $2, $3) RETURNING itemId"
+	sqlStatement := "INSERT INTO orderItems (productId, quantity, price) VALUES ($1, $2, $3) RETURNING itemId"
 	err = h.db.QueryRow(sqlStatement, userOrder.ProductId, userOrder.Quantity, userOrder.Price).Scan(&newItemId)
 	if err != nil {
 		panic(err)

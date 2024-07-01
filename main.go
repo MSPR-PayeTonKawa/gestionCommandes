@@ -65,6 +65,14 @@ func main() {
 		orders.DELETE("/{orderId}", h.DeleteOrder)
 	}
 
+	orderItem := router.Group("/item")
+	{
+		orderItem.GET("/", h.GetOrderItem)
+		orderItem.GET("/{itemId}", h.GetOrderItem)
+		orderItem.PUT("/{itemId}", h.ReplaceOrderItem)
+		orderItem.DELETE("/{itemId}", h.DeleteOrderItem)
+	}
+
 	// Start the server
 	router.Run(":8080")
 }
