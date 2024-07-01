@@ -60,18 +60,18 @@ func main() {
 	{
 		orders.GET("/", h.GetOrders)
 		orders.POST("/", h.AddOrder)
-		orders.GET("/{orderId}", h.GetOrder)
-		orders.PUT("/{orderId}", h.ReplaceOrder)
-		orders.DELETE("/{orderId}", h.DeleteOrder)
+		orders.GET("/:orderId", h.GetOrder)
+		orders.PUT("/:orderId", h.ReplaceOrder)
+		orders.DELETE("/:orderId", h.DeleteOrder)
 	}
 
 	orderItem := router.Group("/item")
 	{
 		orderItem.GET("/", h.GetOrderItems)
 		orderItem.POST("/", h.AddOrderItem)
-		orderItem.GET("/{itemId}", h.GetOrderItem)
-		orderItem.PUT("/{itemId}", h.ReplaceOrderItem)
-		orderItem.DELETE("/{itemId}", h.DeleteOrderItem)
+		orderItem.GET("/:itemId", h.GetOrderItem)
+		orderItem.PUT("/:itemId", h.ReplaceOrderItem)
+		orderItem.DELETE("/:itemId", h.DeleteOrderItem)
 		orderItem.DELETE("/clean", h.CleanOrderItem)
 	}
 

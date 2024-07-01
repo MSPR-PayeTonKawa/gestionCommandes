@@ -1,7 +1,7 @@
 package types
 
 type OrderItem struct {
-	ItemId    string  `json:"itemId" example:"12345"`
+	ItemId    int     `json:"itemId" example:"12345"`
 	OrderId   string  `json:"orderId" example:"12345"`
 	ProductId string  `json:"productId" example:"P100"`
 	Quantity  int     `json:"quantity" example:"2"`
