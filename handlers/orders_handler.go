@@ -49,21 +49,21 @@ func (h Handlers) AddOrder(c *gin.Context) {
 	dec := json.NewDecoder(c.Request.Body)
 	log.Print("AddOrder : ", &dec)
 
-	var userOrder *types.OrderItem
-	err := dec.Decode(&userOrder)
+	var order *types.Order
+	err := dec.Decode(&order)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	newItemId := -1
-	sqlStatement := "INSERT INTO orderItems (productId, quantity, price) VALUES ($1, $2, $3) RETURNING itemId"
-	err = h.db.QueryRow(sqlStatement, userOrder.ProductId, userOrder.Quantity, userOrder.Price).Scan(&newItemId)
+	newOrderId := ""
+	sqlStatement := "INSERT INTO orders (orderId, customerName, orderDate, status, total) VALUES ($1, $2, $3, $4, $5) RETURNING orderId"
+	err = h.db.QueryRow(sqlStatement, order.OrderId, order.CustomerName, order.OrderDate, order.Status, order.Total).Scan(&newOrderId)
 	if err != nil {
 		panic(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"itemId": newItemId})
+	c.JSON(http.StatusOK, gin.H{"itemId": newOrderId})
 }
 func (h Handlers) GetOrder(c *gin.Context)     {}
 func (h Handlers) ReplaceOrder(c *gin.Context) {}
