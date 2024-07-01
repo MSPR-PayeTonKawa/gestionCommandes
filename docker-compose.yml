@@ -1,21 +1,28 @@
 name: gestion-commandes
 services:
-  app:
-    build: .
-    ports:
-      - 3001:8080
+  gestion-commandes:
+    container_name: gestion-commandes
+    build: ../gestionCommandes
     depends_on:
       - db-commandes
     env_file:
-      - .env
+      - ../gestionCommandes/.env
+    networks:
+      - payetonkawa-n
 
   db-commandes:
     container_name: db-commandes
     image: postgres
     env_file:
-      - .env
+      - ../gestionCommandes/.env
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-commandes-data:/var/lib/postgresql/data
+    networks:
+      - payetonkawa-n
 
 volumes:
-  db-data:
+  db-commandes-data:
+
+networks:
+  payetonkawa-n:
+    external: true
