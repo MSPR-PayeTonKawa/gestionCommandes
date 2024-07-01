@@ -67,10 +67,12 @@ func main() {
 
 	orderItem := router.Group("/item")
 	{
-		orderItem.GET("/", h.GetOrderItem)
+		orderItem.GET("/", h.GetOrderItems)
+		orderItem.POST("/", h.AddOrderItem)
 		orderItem.GET("/{itemId}", h.GetOrderItem)
 		orderItem.PUT("/{itemId}", h.ReplaceOrderItem)
 		orderItem.DELETE("/{itemId}", h.DeleteOrderItem)
+		orderItem.DELETE("/clean", h.CleanOrderItem)
 	}
 
 	// Start the server

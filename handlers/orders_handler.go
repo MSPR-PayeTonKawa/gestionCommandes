@@ -13,21 +13,23 @@ func (h Handlers) GetOrders(c *gin.Context) {
 	//log.Print("GetOrders")
 	rows, err := h.db.Query("SELECT * FROM orders")
 
-	var orders []types.OrderItem
+	var orders []types.Order
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for rows.Next() {
-		var ProductId string
-		var Quantity int
-		var Price float64
-		if err := rows.Scan(&ProductId, &Quantity, &Price); err != nil {
+		var OrderId string
+		var CustomerName string
+		var OrderDate string
+		var Status string
+		var Total float64
+		if err := rows.Scan(&OrderId, &CustomerName, &OrderDate, &Status, &Total); err != nil {
 			log.Fatal(err)
 		}
 
-		newOrder := types.OrderItem{ProductId: ProductId, Quantity: Quantity, Price: Price}
+		newOrder := types.Order{OrderId: OrderId, CustomerName: CustomerName, OrderDate: OrderDate, Status: Status, Total: Total}
 		orders = append(orders, newOrder)
 	}
 
