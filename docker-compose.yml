@@ -17,6 +17,7 @@ services:
       - ../gestionCommandes/.env
     volumes:
       - db-commandes-data:/var/lib/postgresql/data
+      - '../gestionCommandes/schema.sql:/docker-entrypoint-initdb.d/schema.sql'
     networks:
       - payetonkawa-n
 
