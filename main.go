@@ -54,8 +54,26 @@ func main() {
 	h := handlers.NewHandler(db)
 
 	// Define a route handler for the root path
-	router.GET("/", h.HelloWorld)
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
+
+	orders := router.Group("/orders")
+	{
+		orders.GET("/", h.GetOrders)
+		orders.POST("/", h.AddOrder)
+		orders.GET("/:orderId", h.GetOrder)
+		orders.PUT("/:orderId", h.ReplaceOrder)
+		orders.DELETE("/:orderId", h.DeleteOrder)
+	}
+
+	orderItem := router.Group("/item")
+	{
+		orderItem.GET("/", h.GetOrderItems)
+		orderItem.POST("/", h.AddOrderItem)
+		orderItem.GET("/:itemId", h.GetOrderItem)
+		orderItem.PUT("/:itemId", h.ReplaceOrderItem)
+		orderItem.DELETE("/:itemId", h.DeleteOrderItem)
+		orderItem.DELETE("/clean", h.CleanOrderItem)
+	}
 
 	// Start the server
 	router.Run(":8080")
