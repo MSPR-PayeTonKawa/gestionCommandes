@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -10,14 +9,13 @@ import (
 )
 
 func (h Handlers) GetOrders(c *gin.Context) {
-	//log.Print("GetOrders")
 	rows, err := h.db.Query("SELECT * FROM orders")
-
-	var orders []types.Order
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	var orders []types.Order
 
 	for rows.Next() {
 		var OrderId string
@@ -46,25 +44,77 @@ func (h Handlers) AddOrder(c *gin.Context) {
 		return
 	}
 
-	dec := json.NewDecoder(c.Request.Body)
-	log.Print("AddOrder : ", &dec)
-
-	var order *types.Order
-	err := dec.Decode(&order)
-
-	if err != nil {
-		log.Fatal(err)
+	var order types.Order
+	if err := c.ShouldBindJSON(&order); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	newOrderId := ""
 	sqlStatement := "INSERT INTO orders (orderId, customerName, orderDate, status, total) VALUES ($1, $2, $3, $4, $5) RETURNING orderId"
-	err = h.db.QueryRow(sqlStatement, order.OrderId, order.CustomerName, order.OrderDate, order.Status, order.Total).Scan(&newOrderId)
+	err := h.db.QueryRow(sqlStatement, order.OrderId, order.CustomerName, order.OrderDate, order.Status, order.Total).Scan(&newOrderId)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"itemId": newOrderId})
+	c.JSON(http.StatusOK, gin.H{"orderId": newOrderId})
 }
-func (h Handlers) GetOrder(c *gin.Context)     {}
-func (h Handlers) ReplaceOrder(c *gin.Context) {}
-func (h Handlers) DeleteOrder(c *gin.Context)  {}
+
+func (h Handlers) GetOrder(c *gin.Context) {
+	orderId := c.Param("orderId")
+
+	row := h.db.QueryRow("SELECT orderId, customerName, orderDate, status, total FROM orders WHERE orderId = $1", orderId)
+
+	var order types.Order
+	err := row.Scan(&order.OrderId, &order.CustomerName, &order.OrderDate, &order.Status, &order.Total)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"order": order})
+}
+
+func (h Handlers) ReplaceOrder(c *gin.Context) {
+	orderId := c.Param("orderId")
+
+	ct := c.Request.Header.Get("Content-Type")
+
+	if ct != "application/json" {
+		c.JSON(http.StatusInternalServerError, "Content-Type header is not application/json")
+		return
+	}
+
+	var updatedOrder types.Order
+	if err := c.ShouldBindJSON(&updatedOrder); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	sqlStatement := `
+		UPDATE orders
+		SET customerName = $1, orderDate = $2, status = $3, total = $4
+		WHERE orderId = $5
+	`
+	_, err := h.db.Exec(sqlStatement, updatedOrder.CustomerName, updatedOrder.OrderDate, updatedOrder.Status, updatedOrder.Total, orderId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "order updated"})
+}
+
+func (h Handlers) DeleteOrder(c *gin.Context) {
+	orderId := c.Param("orderId")
+
+	sqlQuery := "DELETE FROM orders WHERE orderId = $1"
+	_, err := h.db.Exec(sqlQuery, orderId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"deleted orderId": orderId})
+}
