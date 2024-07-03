@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestion-commandes-database-deployment
+  namespace: payetonkawa-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gestion-commandes-database
+  template:
+    metadata:
+      labels:
+        app: gestion-commandes-database
+    spec:
+      containers:
+      - name: gestion-commandes-database
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - secretRef:
+            name: gestion-commandes-secrets
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"

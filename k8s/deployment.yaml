@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestion-commandes-deployment
+  namespace: payetonkawa-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gestion-commandes
+  template:
+    metadata:
+      labels:
+        app: gestion-commandes
+    spec:
+      containers:
+      - name: gestion-commandes-container
+        image: registry.germainleignel.com/paye-ton-kawa/gestion-commandes:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: gestion-commandes-secrets
+        env:
+        - name: ENV
+          value: "production"
+        - name: DB_HOST
+          value: "gestion-commandes-database-service.payetonkawa-prod.svc.cluster.local"
+        - name: GIN_MODE
+          value: "release"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
