@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -65,7 +66,7 @@ func metricsMiddleware() gin.HandlerFunc {
 		duration := time.Since(start)
 		status := c.Writer.Status()
 
-		httpRequestsTotal.WithLabelValues(c.Request.Method, c.FullPath(), string(status)).Inc()
+		httpRequestsTotal.WithLabelValues(c.Request.Method, c.FullPath(), fmt.Sprintf("%d", status)).Inc()
 		httpRequestDuration.WithLabelValues(c.Request.Method, c.FullPath()).Observe(duration.Seconds())
 	}
 }
