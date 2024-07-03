@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: gestion-commandes-service
   namespace: payetonkawa-prod
+  labels:
+    app: gestion-commandes  # Add this label
 spec:
   selector:
     app: gestion-commandes
@@ -10,3 +12,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8080
+      name: http  # Add this name
