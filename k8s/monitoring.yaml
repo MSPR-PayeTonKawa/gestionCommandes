@@ -4,7 +4,7 @@ metadata:
   name: gestion-commandes-monitor
   namespace: payetonkawa-prod
   labels:
-    release: prometheus  # match the label used in your Prometheus setup
+    release: kube-prometheus  # Changed from prometheus to kube-prometheus
 spec:
   selector:
     matchLabels:
