@@ -4,11 +4,14 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 
 	"github.com/MSPR-PayeTonKawa/orders/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -34,6 +37,39 @@ func connectDatabase() (*sql.DB, error) {
 	return db, nil
 }
 
+var (
+	httpRequestsTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_total",
+			Help: "Total number of HTTP requests",
+		},
+		[]string{"method", "endpoint", "status"},
+	)
+
+	httpRequestDuration = promauto.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_request_duration_seconds",
+			Help:    "Duration of HTTP requests in seconds",
+			Buckets: prometheus.DefBuckets,
+		},
+		[]string{"method", "endpoint"},
+	)
+)
+
+func metricsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+
+		c.Next()
+
+		duration := time.Since(start)
+		status := c.Writer.Status()
+
+		httpRequestsTotal.WithLabelValues(c.Request.Method, c.FullPath(), string(status)).Inc()
+		httpRequestDuration.WithLabelValues(c.Request.Method, c.FullPath()).Observe(duration.Seconds())
+	}
+}
+
 func main() {
 	if os.Getenv("GIN_MODE") != "release" {
 		log.Println("Loading .env file")
@@ -46,6 +82,9 @@ func main() {
 	// Create a new Gin router
 	router := gin.Default()
 
+	// Apply the metrics middleware
+	router.Use(metricsMiddleware())
+
 	db, err := connectDatabase()
 	if err != nil {
 		log.Fatal(err)
@@ -53,7 +92,7 @@ func main() {
 
 	h := handlers.NewHandler(db)
 
-	// Define a route handler for the root path
+	// Define a route handler for the metrics path
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	orders := router.Group("/orders")
