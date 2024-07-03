@@ -55,6 +55,27 @@ var (
 		},
 		[]string{"method", "endpoint"},
 	)
+
+	dbConnectionsOpen = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "db_connections_open",
+			Help: "Number of open database connections",
+		},
+	)
+
+	ordersTotalValue = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "orders_total_value",
+			Help: "Total value of all orders",
+		},
+	)
+
+	orderItemsTotal = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "order_items_total",
+			Help: "Total number of order items",
+		},
+	)
 )
 
 func metricsMiddleware() gin.HandlerFunc {
@@ -68,6 +89,26 @@ func metricsMiddleware() gin.HandlerFunc {
 
 		httpRequestsTotal.WithLabelValues(c.Request.Method, c.FullPath(), fmt.Sprintf("%d", status)).Inc()
 		httpRequestDuration.WithLabelValues(c.Request.Method, c.FullPath()).Observe(duration.Seconds())
+	}
+}
+
+func updateCustomMetrics(db *sql.DB) {
+	// Update DB connections metric
+	stats := db.Stats()
+	dbConnectionsOpen.Set(float64(stats.OpenConnections))
+
+	// Update total order value
+	var totalValue float64
+	err := db.QueryRow("SELECT COALESCE(SUM(total), 0) FROM orders").Scan(&totalValue)
+	if err == nil {
+		ordersTotalValue.Set(totalValue)
+	}
+
+	// Update total order items
+	var totalItems int
+	err = db.QueryRow("SELECT COUNT(*) FROM orderItems").Scan(&totalItems)
+	if err == nil {
+		orderItemsTotal.Set(float64(totalItems))
 	}
 }
 
@@ -114,6 +155,14 @@ func main() {
 		orderItem.DELETE("/:itemId", h.DeleteOrderItem)
 		orderItem.DELETE("/clean", h.CleanOrderItem)
 	}
+
+	// Schedule custom metrics update
+	ticker := time.NewTicker(1 * time.Minute)
+	go func() {
+		for range ticker.C {
+			updateCustomMetrics(db)
+		}
+	}()
 
 	// Start the server
 	router.Run(":8080")
