@@ -21,6 +21,11 @@ spec:
         envFrom:
         - secretRef:
             name: gestion-commandes-secrets
+        volumeMounts:
+        - name: schema-volume
+          mountPath: /docker-entrypoint-initdb.d
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
         resources:
           limits:
             cpu: "1"
@@ -28,3 +33,9 @@ spec:
           requests:
             cpu: "100m"
             memory: "256Mi"
+      volumes:
+      - name: schema-volume
+        configMap:
+          name: gestion-commandes-schema
+      - name: postgres-storage
+        emptyDir: {}
