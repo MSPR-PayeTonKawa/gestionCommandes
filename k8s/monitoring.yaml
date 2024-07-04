@@ -4,7 +4,7 @@ metadata:
   name: gestion-commandes-monitor
   namespace: payetonkawa-prod
   labels:
-    release: kube-prometheus  # Changed from prometheus to kube-prometheus
+    release: kube-prometheus # Changed from prometheus to kube-prometheus
 spec:
   selector:
     matchLabels:
@@ -13,9 +13,9 @@ spec:
     matchNames:
       - payetonkawa-prod
   endpoints:
-  - port: http
-    path: /metrics
-    interval: 15s
+    - port: http
+      path: /metrics
+      interval: 15s
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -103,7 +103,8 @@ data:
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "reqps"
             },
             "overrides": []
           },
@@ -116,14 +117,14 @@ data:
           "id": 1,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
-              "mode": "single",
-              "sort": "none"
+              "mode": "multi",
+              "sort": "desc"
             }
           },
           "targets": [
@@ -132,10 +133,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "sum(rate(http_requests_total[5m])) by (endpoint)",
+              "expr": "sum(rate(http_requests_total{namespace=\"payetonkawa-prod\"}[5m])) by (endpoint)",
               "legendFormat": "{{endpoint}}",
-              "range": true,
               "refId": "A"
             }
           ],
@@ -209,14 +208,14 @@ data:
           "id": 2,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
-              "mode": "single",
-              "sort": "none"
+              "mode": "multi",
+              "sort": "desc"
             }
           },
           "targets": [
@@ -225,10 +224,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, endpoint))",
+              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace=\"payetonkawa-prod\"}[5m])) by (le, endpoint))",
               "legendFormat": "{{endpoint}}",
-              "range": true,
               "refId": "A"
             }
           ],
@@ -252,6 +249,10 @@ data:
                   {
                     "color": "green",
                     "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.01
                   },
                   {
                     "color": "red",
@@ -289,10 +290,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m]))",
-              "legendFormat": "__auto",
-              "range": true,
+              "expr": "sum(rate(http_requests_total{namespace=\"payetonkawa-prod\", status=~\"5..\"}[5m])) / sum(rate(http_requests_total{namespace=\"payetonkawa-prod\"}[5m]))",
               "refId": "A"
             }
           ],
@@ -365,8 +363,8 @@ data:
           "id": 4,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
@@ -381,10 +379,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "go_goroutines",
+              "expr": "go_goroutines{namespace=\"payetonkawa-prod\"}",
               "legendFormat": "Goroutines",
-              "range": true,
               "refId": "A"
             }
           ],
@@ -458,8 +454,8 @@ data:
           "id": 5,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
@@ -474,10 +470,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "go_memstats_alloc_bytes",
+              "expr": "go_memstats_alloc_bytes{namespace=\"payetonkawa-prod\"}",
               "legendFormat": "Memory Usage",
-              "range": true,
               "refId": "A"
             }
           ],
@@ -550,8 +544,8 @@ data:
           "id": 6,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
@@ -566,10 +560,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "db_connections_open",
+              "expr": "db_connections_open{namespace=\"payetonkawa-prod\"}",
               "legendFormat": "Open DB Connections",
-              "range": true,
               "refId": "A"
             }
           ],
@@ -610,8 +602,6 @@ data:
                 "spanNulls": false,
                 "stacking": {
                   "group": "A",
-                  "mode":"stacking": {
-                  "group": "A",
                   "mode": "none"
                 },
                 "thresholdsStyle": {
@@ -645,8 +635,8 @@ data:
           "id": 7,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
@@ -661,10 +651,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "orders_total_value",
+              "expr": "orders_total_value{namespace=\"payetonkawa-prod\"}",
               "legendFormat": "Total Order Value",
-              "range": true,
               "refId": "A"
             }
           ],
@@ -737,8 +725,8 @@ data:
           "id": 8,
           "options": {
             "legend": {
-              "calcs": [],
-              "displayMode": "list",
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
@@ -753,26 +741,175 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "editorMode": "code",
-              "expr": "order_items_total",
+              "expr": "order_items_total{namespace=\"payetonkawa-prod\"}",
               "legendFormat": "Total Order Items",
-              "range": true,
               "refId": "A"
             }
           ],
           "title": "Total Order Items",
           "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 32
+          },
+          "id": 9,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "9.5.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "rate(process_cpu_seconds_total{namespace=\"payetonkawa-prod\"}[5m]) * 100",
+              "refId": "A"
+            }
+          ],
+          "title": "CPU Usage",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 32
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": ["mean", "max", "min"],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "rate(go_gc_duration_seconds{namespace=\"payetonkawa-prod\"}[5m])",
+              "legendFormat": "GC Duration",
+              "refId": "A"
+            }
+          ],
+          "title": "Garbage Collection Duration",
+          "type": "timeseries"
         }
       ],
-      "refresh": "",
+      "refresh": "10s",
       "schemaVersion": 38,
       "style": "dark",
-      "tags": [],
+      "tags": ["gestion-commandes"],
       "templating": {
         "list": []
       },
       "time": {
-        "from": "now-6h",
+        "from": "now-1h",
         "to": "now"
       },
       "timepicker": {},
